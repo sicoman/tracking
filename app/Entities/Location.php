@@ -1,21 +1,38 @@
 <?php
 
-namespace App\Models;
+namespace App\Entities;
 
 use Jenssegers\Mongodb\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
-use MongoDB\Operation\FindOneAndUpdate;
+use Prettus\Repository\Contracts\Transformable;
+use Prettus\Repository\Traits\TransformableTrait;
 
-class Tracking extends Model
+/**
+ * Class Location.
+ *
+ * @package namespace App\Entities;
+ */
+class Location extends Model implements Transformable
 {
+    use TransformableTrait;
+
+    protected $table = 'locations';
+
+    //protected $guard = 'driver';
+
     protected $geometry = ['location'];
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
 
     protected $fillable = [
         'id',
         'driver_id',
         'location',
-        'created_at',
-        'updated_at'
+        'time',
+        'insertion_id'
     ];
 
     public function setIdAttribute()
@@ -32,4 +49,5 @@ class Tracking extends Model
         );
         return $seq->seq;
     }
+
 }

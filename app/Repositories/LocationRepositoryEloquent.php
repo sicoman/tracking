@@ -2,46 +2,62 @@
 
 namespace App\Repositories;
 
-use Carbon\Carbon;
+use Prettus\Repository\Eloquent\BaseRepository;
+use Prettus\Repository\Criteria\RequestCriteria;
+use App\Repositories\LocationRepository;
+use App\Entities\Location;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
-use App\Models\Tracking;
-use App\Exceptions\CustomException;
-
-class TrackingRepository
+/**
+ * Class LocationRepositoryEloquent.
+ *
+ * @package namespace App\Repositories;
+ */
+class LocationRepositoryEloquent extends BaseRepository implements LocationRepository
 {
     /**
-     * @var Tracking
+     * Specify Model class name
+     *
+     * @return string
      */
-    protected $model;
+    public function model()
+    {
+        return Location::class;
+    }
+
+
 
     /**
-     * TrackingRepository constructor.
-     *
-     * @param Model $model
+     * Boot up the repository, pushing criteria
      */
-    public function __construct(Tracking $model)
+    public function boot()
     {
-        $this->model = $model;
+        $this->pushCriteria(app(RequestCriteria::class));
     }
 
     /**
      * Store a newly created waypoint in storage.
      *
      * @param  array  $input
-     * @return App\Models\Tracking
+     * @return App\Entities\Location
      */
     public function createWayPoints(array $input)
     {
-        $now = date('Y-m-d H:i:s');
+        $uuid = Str::orderedUuid();
         foreach($input['locations'] as $key => $location) {
             $input['locations'][$key] = [
                 'driver_id' => $input['driver_id'],
-                'location' => $location,
-                'created_at' => $now,
-                'updated_at' => $now,
+                'location' => Arr::only($location, ['lat', 'lng']),
+                'time' => $location['time'],
+                'insertion_id' => $uuid,
             ];
         }
-        return Tracking::insert($input);
+
+        $this->insert($input);
+
+        $data = $this->where('insertion_id', $uuid)->get();
+        return mobile_response($data);
     }
 
     /**
@@ -68,7 +84,8 @@ class TrackingRepository
             ]
         ];
 
-        return Tracking::where($where)->get()->pluck('driver_id');
+        $data = $this->where($where)->get()->pluck('driver_id');
+        return mobile_response($data);
     }
 
     /**
@@ -82,10 +99,11 @@ class TrackingRepository
         $start_time = Carbon::createFromFormat('Y-m-d H:i:s', $input['start_time']);
         $end_time = Carbon::createFromFormat('Y-m-d H:i:s', $input['end_time']);
 
-        return Tracking::select('location')->where('driver_id', $input['driver_id'])
+        $data = $this->select('location')->where('driver_id', $input['driver_id'])
             ->whereBetween('created_at', [$start_time, $end_time])
             ->get()
             ->pluck('location');
+        return mobile_response($data);
     }
 
     /**
@@ -110,6 +128,7 @@ class TrackingRepository
               }
             }
          ])';
-        return Tracking::where($where)->get();
+        $data = $this->where($where)->get();
+        return mobile_response($data);
     }
 }

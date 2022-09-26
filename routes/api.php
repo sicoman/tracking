@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\TrackingController;
+use App\Http\Controllers\LocationsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,9 +19,9 @@ Route::group([
     //'middleware' => ['auth:admin'],
 ], function () {
 
-    Route::post('/waypoints', [TrackingController::class, 'createWayPoints']);
-    Route::get('/route', [TrackingController::class, 'getRoute']);
-    Route::get('/route/distance', [TrackingController::class, 'getRouteDistance']);
-    Route::get('/nearby/drivers', [TrackingController::class, 'getDriversNearBy']);
+    Route::post('/waypoints', [LocationsController::class, 'createWayPoints']);
+    Route::get('/route', [LocationsController::class, 'getRoute']);
+    Route::get('/route/distance', [LocationsController::class, 'getRouteDistance']);
+    Route::get('/nearby/drivers', [LocationsController::class, 'getDriversNearBy']);
 
 });

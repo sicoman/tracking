@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateWayPointRequest;
-use App\Repositories\LocationRepository;
 use App\Services\Location\CreateWayPointService;
 
 /**
@@ -14,30 +13,15 @@ use App\Services\Location\CreateWayPointService;
 class LocationsController extends Controller
 {
     /**
-     * @var CreateWayPointService
-     */
-    protected $createWayPointService;
-
-    /**
-     * LocationsController constructor.
-     *
-     * @param CreateWayPointService $repository
-     */
-    public function __construct(CreateWayPointService $createWayPointService)
-    {
-        $this->createWayPointService = $createWayPointService;
-    }
-
-
-    /**
      * Store a newly created waypoint in storage.
      *
      * @param  CreateWayPointRequest $request
      *
      * @return \Illuminate\Http\Response
      */
-    public function createWayPoints(CreateWayPointRequest $request)
+    public function createWayPoints(CreateWayPointRequest $request, CreateWayPointService $service)
     {
-        $this->createWayPointService->execute($request->validated());
+        $data = $service->execute($request->validated());
+        return success_response($data);
     }
 }

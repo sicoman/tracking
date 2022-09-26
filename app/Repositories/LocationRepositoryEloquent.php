@@ -44,20 +44,20 @@ class LocationRepositoryEloquent extends BaseRepository implements LocationRepos
      */
     public function createWayPoints(array $input)
     {
-        $uuid = Str::orderedUuid();
+        $uuid = Str::orderedUuid()->toString();
         foreach($input['locations'] as $key => $location) {
             $input['locations'][$key] = [
                 'driver_id' => $input['driver_id'],
+                'status' => $location['status'],
                 'location' => Arr::only($location, ['lat', 'lng']),
                 'time' => $location['time'],
                 'insertion_id' => $uuid,
             ];
         }
 
-        $this->insert($input);
+        $this->insert($input['locations']);
 
-        $data = $this->where('insertion_id', $uuid)->get();
-        return mobile_response($data);
+        return $this->where('insertion_id', $uuid)->get();
     }
 
     /**

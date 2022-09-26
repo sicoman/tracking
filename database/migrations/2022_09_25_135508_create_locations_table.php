@@ -18,9 +18,10 @@ class CreateLocationsTable extends Migration
 		Schema::create('locations', function(Blueprint $collection) {
             $collection->increments('id');
             $collection->unsignedBigInteger('driver_id');
+            $collection->enum('status', ['Ideal', 'Riding', 'Waiting']);
             $collection->point('location');
             $collection->timestamp('created_at');
-            $collection->uuid('insertion_id');
+            $collection->string('insertion_id');
 
             $collection->geospatial('location', '2dsphere');
 		});

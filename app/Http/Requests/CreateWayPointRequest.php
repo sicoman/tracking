@@ -28,6 +28,7 @@ class CreateWayPointRequest extends FormRequest
             'locations' => ['required'],
             'locations.*.lat' => ['required', 'numeric', 'min:-90', 'max:90'],
             'locations.*.lng' => ['required', 'numeric', 'min:-180', 'max:180'],
+            'locations.*.status' => ['required', 'in:Ideal,Riding,Waiting']
         ];
     }
 
@@ -40,7 +41,17 @@ class CreateWayPointRequest extends FormRequest
     {
         return [
             'driver_id.required' => __('validation.required'),
-            'locations.required' => __('validation.required')
+            'locations.required' => __('validation.required'),
+            'locations.*.lat.required' => __('validation.required'),
+            'locations.*.lng.required' => __('validation.required'),
+            'locations.*.lat.numeric' => __('validation.numeric'),
+            'locations.*.lng.numeric' => __('validation.numeric'),
+            'locations.*.lat.min' => __('validation.min'),
+            'locations.*.lng.min' => __('validation.min'),
+            'locations.*.lat.max' => __('validation.max'),
+            'locations.*.lng.max' => __('validation.max'),
+            'locations.*.status.in' => __('validation.in'),
+            'locations.*.status.required' => __('validation.required'),
         ];
     }
 }

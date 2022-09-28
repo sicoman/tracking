@@ -12,7 +12,7 @@ use Prettus\Repository\Contracts\RepositoryInterface;
 interface LocationRepository extends RepositoryInterface
 {
     public function createWayPoints(array $input);
-    public function getDriversNearBy(array $input);
+    public function getNearByDrivers(array $input);
     public function getRoute(array $input);
     public function getRouteDistance(array $input);
 }

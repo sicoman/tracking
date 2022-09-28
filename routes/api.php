@@ -22,6 +22,6 @@ Route::group([
     Route::post('/waypoints', [LocationsController::class, 'createWayPoints']);
     Route::get('/route', [LocationsController::class, 'getRoute']);
     Route::get('/route/distance', [LocationsController::class, 'getRouteDistance']);
-    Route::get('/nearby/drivers', [LocationsController::class, 'getDriversNearBy']);
+    Route::get('/nearby/drivers', [LocationsController::class, 'getNearByDrivers']);
 
 });

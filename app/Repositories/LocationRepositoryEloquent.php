@@ -4,8 +4,10 @@ namespace App\Repositories;
 
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
+
 use App\Repositories\LocationRepository;
 use App\Entities\Location;
+
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
@@ -40,7 +42,7 @@ class LocationRepositoryEloquent extends BaseRepository implements LocationRepos
      * Store a newly created waypoint in storage.
      *
      * @param  array  $input
-     * @return App\Entities\Location
+     * @return App\Entities\Location[]
      */
     public function createWayPoints(array $input)
     {
@@ -66,7 +68,7 @@ class LocationRepositoryEloquent extends BaseRepository implements LocationRepos
      * @param  array  $input
      * @return array $drivers_ids
      */
-    public function getDriversNearBy(array $input)
+    public function getNearByDrivers(array $input)
     {
         $where = [
             'location' => [
@@ -84,8 +86,7 @@ class LocationRepositoryEloquent extends BaseRepository implements LocationRepos
             ]
         ];
 
-        $data = $this->where($where)->get()->pluck('driver_id');
-        return mobile_response($data);
+        return $this->where($where)->get()->pluck('driver_id')->unique();
     }
 
     /**
@@ -96,14 +97,11 @@ class LocationRepositoryEloquent extends BaseRepository implements LocationRepos
      */
     public function getRoute(array $input)
     {
-        $start_time = Carbon::createFromFormat('Y-m-d H:i:s', $input['start_time']);
-        $end_time = Carbon::createFromFormat('Y-m-d H:i:s', $input['end_time']);
-
-        $data = $this->select('location')->where('driver_id', $input['driver_id'])
-            ->whereBetween('created_at', [$start_time, $end_time])
+        return $this->select('location')
+            ->where('driver_id', $input['driver_id'])
+            ->whereBetween('time', [$input['start_time'], $input['end_time']])
             ->get()
             ->pluck('location');
-        return mobile_response($data);
     }
 
     /**
@@ -127,8 +125,8 @@ class LocationRepositoryEloquent extends BaseRepository implements LocationRepos
                  spherical: true
               }
             }
-         ])';
-        $data = $this->where($where)->get();
-        return mobile_response($data);
+        ])';
+
+        return $this->where($where)->get();
     }
 }

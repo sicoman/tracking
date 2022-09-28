@@ -20,8 +20,8 @@ class CreateLocationsTable extends Migration
             $collection->unsignedBigInteger('driver_id');
             $collection->enum('status', ['Ideal', 'Riding', 'Waiting']);
             $collection->point('location');
-            $collection->timestamp('created_at');
-            $collection->string('insertion_id');
+            $collection->timestamp('time');
+            $collection->uuid('insertion_id');
 
             $collection->geospatial('location', '2dsphere');
 		});

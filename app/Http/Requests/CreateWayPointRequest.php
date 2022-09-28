@@ -24,11 +24,12 @@ class CreateWayPointRequest extends FormRequest
     public function rules()
     {
         return [
-            'driver_id' => ['required'],
-            'locations' => ['required'],
+            'driver_id' => ['required', 'integer'],
+            'locations' => ['required', 'array'],
             'locations.*.lat' => ['required', 'numeric', 'min:-90', 'max:90'],
             'locations.*.lng' => ['required', 'numeric', 'min:-180', 'max:180'],
-            'locations.*.status' => ['required', 'in:Ideal,Riding,Waiting']
+            'locations.*.status' => ['required', 'in:Ideal,Riding,Waiting'],
+            'locations.*.time' => ['required', 'date_format:Y-m-d H:i:s'],
         ];
     }
 
@@ -52,6 +53,8 @@ class CreateWayPointRequest extends FormRequest
             'locations.*.lng.max' => __('validation.max'),
             'locations.*.status.in' => __('validation.in'),
             'locations.*.status.required' => __('validation.required'),
+            'locations.*.time.required' => __('validation.required'),
+            'locations.*.time.date_format' => __('validation.date_format'),
         ];
     }
 }
